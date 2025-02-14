@@ -1,9 +1,18 @@
+# This is Science Fiction Radio Version 0.05(ish)
+# An Arduino attached to USB port 0 spits out numbers from 0 to 1024
+# a golactic radio dial image "RadioDial_4x3.png" is displayed full screen
+# a pointer indicates something related to the number received
+# should be displayed on a 1280 x 1024 monitor for full effect
+# by Tom McGuire 2/21/2025
+
 import cv2
 import numpy as np
 import tkinter as tk
 from PIL import Image, ImageTk
+import serial
+import time
 
-def create_needle(image, center, angle, length, color=(0, 0, 255), thickness=4):
+def create_needle(image, center, angle, length, color=(44,94,148), thickness=4):
     """
     Creates a needle image overlay.
 
@@ -45,8 +54,14 @@ def update_dial():
     canvas.create_image(0, 0, image=photo, anchor=tk.NW)
     root.update()
 
-    # Increment the value (for demonstration)
-    current_value = (current_value + 1) % 1024
+    # Update value (for demonstration)
+    current_value = current_value % 1024
+    if ser.in_waiting > 0:
+        data = ser.readline().decode('utf-8').strip()
+        if data.isdigit():
+            current_value = int(data)
+            
+    print(hex(current_value)+" ")
 
     # Schedule the next update
     root.after(10, update_dial)
@@ -54,16 +69,21 @@ def update_dial():
 def stop_animation(event):
     global running
     running = False
+    ser.close()
     root.destroy()  # Close the window
 
+# configure serial port
+ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=2, xonxoff=False)
+print(f"Port {ser.name} open: {ser.is_open} \n")
+
 # Load the dial image
-dial_image = cv2.imread("RadioDial2.png") 
+dial_image = cv2.imread("RadioDial_4x3.png") 
 
 # Get the center of the dial
 center = (dial_image.shape[1] // 2, dial_image.shape[0] // 2)
 
 # Define the needle length
-needle_length = 330
+needle_length = 350
 
 # Initialize Tkinter
 root = tk.Tk()
@@ -74,7 +94,7 @@ canvas = tk.Canvas(root, width=dial_image.shape[1], height=dial_image.shape[0])
 canvas.pack()
 
 # Initialize current value and running flag
-current_value = 0
+current_value = 1
 running = True
 
 # Create the initial needle image
