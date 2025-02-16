@@ -73,7 +73,7 @@ def stop_animation(event):
     root.destroy()  # Close the window
 
 # configure serial port
-ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=2, xonxoff=False)
+ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=2, xonxoff=False)
 print(f"Port {ser.name} open: {ser.is_open} \n")
 
 # Load the dial image
