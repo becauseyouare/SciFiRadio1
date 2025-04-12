@@ -2,7 +2,8 @@ import serial
 
 try:
     #open serial port
-    ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=2, xonxoff=False)
+    # ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=2, xonxoff=False)
+    ser = serial.Serial('COM3', 115200, timeout=2, xonxoff=False)
     # , rtscts=False, dsrdtr=False  Tried with and without the last 3 parameters, and also at 1Mbps, same happens.
     print(f"Port {ser.name} open: {ser.is_open} \n")
     while True:
@@ -17,7 +18,7 @@ try:
         # receive data
         while True:
             if ser.in_waiting > 0:
-                data = ser.readline().decode('utf-8').strip()
+                data = ser.readline().decode('utf-8', errors='ignore').strip()
                 print(f"Received: {data} ")
                 if data.isdigit():
                     n = int(data) / 2
