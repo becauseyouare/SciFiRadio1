@@ -115,7 +115,7 @@ def stop_animation(event):
 
 # configure serial port
 #ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=2, xonxoff=False)  
-ser = serial.Serial('COM3', 115200, timeout=2, xonxoff=False)  # /dev/ttyUSB0
+ser = serial.Serial('COM3', 115200, timeout=2, xonxoff=False)  # /dev/ttyU
 print(f"Port {ser.name} open: {ser.is_open} \n")
 
 # Load the dial image
